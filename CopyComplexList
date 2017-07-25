@@ -1,0 +1,54 @@
+	struct ComplexNode
+	{
+		int _data;
+		ComplexNode* _next;
+		ComplexNode* _random;
+		ComplexNode(int x)
+			:_data(x)
+			, _next(NULL)
+			, _random(NULL)
+		{}
+	};
+	ComplexNode* CopyComplexList(ComplexNode* pHead)
+	{
+		if (pHead == NULL)
+			return NULL;
+		// 1. 插入新节点
+		ComplexNode* pCur = pHead;
+		ComplexNode* NewNode = NULL;
+		while (pCur)
+		{
+			NewNode = new ComplexNode(pCur->_data);
+			NewNode->_next = pCur->_next;
+			pCur->_next = NewNode;
+			pCur = NewNode->_next;
+		}
+
+		// 2. 拷贝随机域
+		pCur = pHead;
+		NewNode = pCur->_next;
+		while (pCur)
+		{
+			if (pCur->_random)
+				NewNode->_random = pCur->_random->_next;
+			else
+				NewNode->_random = NULL;
+			pCur = NewNode->_next;
+			if (pCur)
+				NewNode = pCur->_next;
+		}
+		// 3. 拆分节点
+		NewNode = pHead->_next;
+		pHead->_next = NewNode->_next;
+		pCur = pHead->_next;
+		ComplexNode* pTail = NewNode;
+		while (pCur)
+		{
+			ComplexNode* pNext = pCur->_next;
+			pCur->_next = pNext->_next;
+			pTail->_next = pNext;
+			pTail = pNext;
+			pCur = pCur->_next;
+		}
+		return NewNode;
+	}
