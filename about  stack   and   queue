@@ -1,0 +1,215 @@
+#pragma once
+
+#include <iostream>
+using namespace std;
+#include <stack>
+#include <queue>
+#include <utility>
+#include <assert.h>
+//
+namespace SQ_TOPIC
+{
+	template <class T>
+	class Stack
+	{
+	public:
+		void Push(const T& x)
+		{
+			_st.push(x);
+			if (_min_st.empty())
+			{
+				_min_st.push(make_pair(x, 1));
+			}
+			else
+			{
+				pair<T, size_t>& min = _min_st.top();
+				if (x < min.first)
+					_min_st.push(make_pair(x, 1));
+				else if (x == min.first)
+					min.second++;
+		}
+		void Pop()
+		{
+			assert(!_st.empty());
+			T& top = _st.top();
+			pair<T, size_t>& min = _min_st.top();
+			if (top == min.first && --min.second == 0)
+				_min_st.pop();
+			_st.pop();
+		}
+		T Min()
+		{
+			return _min_st.top().first;
+		}
+	private:
+		stack<T> _st;
+		stack<pair<T, size_t>> _min_st;
+	};
+
+	void TestStack()
+	{
+		int arr[] = { 5, 5, 41, 6, 3, 3, 15, 67, 9, 3 };
+		Stack<int> st;
+		for (int i = 0; i < 8; i++)
+		{
+			st.Push(arr[i]);
+		}
+		for (int i = 0; i < 8; i++)
+		{
+			cout<<st.Min()<<"  ";
+			st.Pop();
+		}
+		cout << endl;
+	}
+
+
+	template <class T>
+	class Queue
+	{
+	public :
+		void Push(const T& x)
+		{
+			_stin.push(x);
+		}
+		void Pop()
+		{
+			assert(!_stin.empty() || !_stout.empty());
+			if (_stout.empty())
+			{
+				while (!_stin.empty())
+				{
+					_stout.push(_stin.top());
+					_stin.pop();
+			}
+			_stout.pop();
+		}
+
+		T& Front()
+		{
+			assert(!_stin.empty() || !_stout.empty());
+			if (_stout.empty())
+			{
+				{
+					_stout.push(_stin.top());
+					_stin.pop();
+				}
+			}
+			return _stout.top();
+		}
+		T& End()
+		{
+			return _srin.top();
+		}
+	private:
+		stack<T> _stin;
+		stack<T> _stout;
+	};
+
+	void TestSQ()
+	{
+		int arr[] = { 5, 5, 41, 6, 3, 3, 15, 67, 9, 3 };
+		for (int i = 0; i < 9; i++)
+		{
+			q.Push(arr[i]);
+			cout << q.Front() << endl;
+		}
+		q.Pop();
+		q.Pop();
+		cout<<q.Front()<<endl;
+ 	}
+
+	template <class T>
+	class MyStack
+	{
+	public:
+		void Push(const T& x)
+		{
+			_qin.push(x);
+		}
+		void Pop()
+			assert(!_qin.empty() || !_qout.empty());
+			queue<T>* Empty = &_qin;
+			queue<T>* NorEmpty = &_qout;
+			if (_qout.empty())
+				swap(Empty, NorEmpty);
+			while (NorEmpty->size() > 1)
+			{
+				Empty->push(NorEmpty->front());
+				NorEmpty->pop();
+			}
+			NorEmpty->pop();
+		}
+	private:
+		queue<T> _qin;
+		queue<T> _qout;
+	};
+
+	void TestMyStack()
+	{
+		MyStack<int> st;
+		int arr[] = { 5, 5, 41, 6, 3, 3, 15, 67, 9, 3 };
+		for (int i = 0; i < 8; i++)
+		{
+			st.Push(arr[i]);
+		}
+		cout << endl;
+		for (int i = 0; i < 8; i++)
+		{
+			st.Pop();
+		}
+	}
+
+	
+
+	bool IsInvalidStack(char* in, char* out)
+	{
+		assert(in&&out);
+		stack<char> st;
+		while (1)
+		{
+			while (!st.empty())
+			{
+				if (*out && st.top() == *out)
+				{
+					st.pop();
+					out++;
+				}
+				else
+					break;
+			}
+			if (*in)
+			{
+				st.push(*in);
+				++in;
+			}
+			else
+			{
+				if (*out)
+					return false;
+				else
+					return true;
+			}
+		}
+	}
+
+	void TestIsInvalidStack()
+	{
+		char* in = "12345";
+		char* out = "45231";
+		cout << IsInvalidStack(in, out) << endl;
+	}
+}
+
+
+
+int CountOne(int data)
+{
+	int count = 0;
+	while (data)
+	{
+		data = data & (data - 1);
+		count++;
+	}
+	return count;
+}
+
